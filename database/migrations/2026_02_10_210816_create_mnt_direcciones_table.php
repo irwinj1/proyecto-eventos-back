@@ -16,8 +16,9 @@ return new class extends Migration {
             $table->foreignId('id_distrito')->references('id')->on('ctl_distritos')->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('id_persona')->nullable()->constrained('mnt_persona')->cascadeOnUpdate()->cascadeOnDelete();
             $table->foreignId('id_evento')->nullable()->constrained('mnt_eventos')->cascadeOnUpdate()->cascadeOnDelete();
-            $table->foreignId('id_usuario_creacion')->constrained('users');
-            $table->foreignId('id_usuario_actualizacion')->constrained('users');
+            $table->foreignId('id_usuario_creacion')->nullable()->constrained('users');
+            $table->foreignId('id_usuario_actualizacion')->nullable()->constrained('users');
+            $table->foreignId('id_usuario_eliminacion')->nullable()->constrained('users');
             $table->foreignId('id_tipo_direccion')->constrained('ctl_tipo_direcciones');
             $table->timestamps();
         });

@@ -25,8 +25,9 @@ return new class extends Migration
             $table->string('meet_url',500)->nullable();
             $table->integer('cantidad_asistentes')->default(0);
             $table->foreignId('id_categoria')->references('id')->on('ctl_categorias')->onUpdate('cascade')->onDelete('cascade');
-            $table->foreignId('id_usuario_creacion')->constrained('users');
-            $table->foreignId('id_usuario_actualizacion')->constrained('users');
+            $table->foreignId('id_usuario_creacion')->nullable()->constrained('users');
+            $table->foreignId('id_usuario_actualizacion')->nullable()->constrained('users');
+            $table->foreignId('id_usuario_eliminacion')->nullable()->constrained('users');
             $table->foreignId('id_usuario')->constrained('users');
             $table->boolean('es_silla_numerada')->default(false);
             $table->timestamps();

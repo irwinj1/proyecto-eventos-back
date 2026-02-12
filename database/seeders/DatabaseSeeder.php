@@ -23,6 +23,7 @@ class DatabaseSeeder extends Seeder
             CtlDepartamentosSeeder::class,
             CtlMunicipiosSeeder::class,
             CtlDistritosSeeder::class,
+            CtlCategoriaSeeder::class
           
          
         ]);

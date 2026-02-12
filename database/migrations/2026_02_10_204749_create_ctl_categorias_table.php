@@ -17,9 +17,9 @@ return new class extends Migration
             $table->boolean('estado')->default(true);
             $table->string('color');
             $table->string('icono');
-            $table->foreignId('id_usuario_creacion')->constrained('users');
-            $table->foreignId('id_usuario_actualizacion')->constrained('users');
-            $table->foreignId('id_usuario_eliminacion')->constrained('users');
+            $table->foreignId('id_usuario_creacion')->nullable()->constrained('users');
+            $table->foreignId('id_usuario_actualizacion')->nullable()->constrained('users');
+            $table->foreignId('id_usuario_eliminacion')->nullable()->constrained('users');
             $table->timestamps();
         });
     }

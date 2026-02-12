@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('estado');
             $table->foreignId('id_genero')->constrained('ctl_genero');
             $table->date('fecha_nacimiento');
-            $table->foreignId('id_usuario_creacion')->constrained('users');
-            $table->foreignId('id_usuario_actualizacion')->constrained('users');
-            $table->foreignId('id_usuario_eliminacion')->constrained('users');  
+            $table->foreignId('id_usuario_creacion')->nullable()->constrained('users');
+            $table->foreignId('id_usuario_actualizacion')->nullable()->constrained('users');
+            $table->foreignId('id_usuario_eliminacion')->nullable()->constrained('users');
             $table->foreignId('id_usuario')->constrained('users');
             
             $table->timestamps();

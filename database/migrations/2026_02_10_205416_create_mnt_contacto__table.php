@@ -16,9 +16,9 @@ return new class extends Migration
             $table->string('nombre');
             $table->foreignId('id_tipo_contacto')->constrained('ctl_tipo_contactos');
             $table->foreignId('id_persona')->constrained('mnt_persona');
-            $table->foreignId('id_usuario_creacion')->constrained('users');
-            $table->foreignId('id_usuario_actualizacion')->constrained('users');
-            $table->foreignId('id_usuario_eliminacion')->constrained('users');
+            $table->foreignId('id_usuario_creacion')->nullable()->constrained('users');
+            $table->foreignId('id_usuario_actualizacion')->nullable()->constrained('users');
+            $table->foreignId('id_usuario_eliminacion')->nullable()->constrained('users');
             $table->timestamps();
         });
     }
