@@ -23,9 +23,11 @@ class DatabaseSeeder extends Seeder
             CtlDepartamentosSeeder::class,
             CtlMunicipiosSeeder::class,
             CtlDistritosSeeder::class,
-            CtlCategoriaSeeder::class
-          
-         
+            CtlCategoriaSeeder::class,
+            CtlGeneroSeeder::class,
+            CtlTipoContactosSeeder::class,
+            CtlTipoDireccionesSeeder::class,
+            
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CtlTipoContacto;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,9 +14,9 @@ class CtlTipoContactosSeeder extends Seeder
     public function run(): void
     {
         //
-        $data = [
+        collect([
             'Email',
             'Télefono'
-        ];
+        ])->each(fn($d)=>CtlTipoContacto::updateOrCreate(['nombre'=>$d]));
     }
 }

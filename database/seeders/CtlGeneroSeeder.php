@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\CtlGenero;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,9 +14,12 @@ class CtlGeneroSeeder extends Seeder
     public function run(): void
     {
         //
-        $data=[
+        collect([
             'Femenino',
             'Masculino'
-        ];
+        ])->each(fn($d)=> 
+        CtlGenero::updateOrCreate(['nombre'=>$d])
+    );
+      
     }
 }
