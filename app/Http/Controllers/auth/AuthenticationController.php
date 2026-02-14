@@ -7,6 +7,7 @@ use App\Models\Sesiones\ActiveSesion;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use Tymon\JWTAuth\Exceptions\JWTException;
@@ -30,7 +31,7 @@ class AuthenticationController extends Controller
                 'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
            
             ];
-
+           
             $validator = Validator::make($request->all(), [
                 'email' => 'required|email|exists:users,email',
                 'password' => 'required|min:8',
@@ -42,45 +43,46 @@ class AuthenticationController extends Controller
                     'errors' => $validator->errors()
                 ], 422);
             }
-
-            $credentials = $request->only('email', 'password');
            
+            $credentials = $request->only('email', 'password');
+            
             if (!$token = auth('api')->attempt($credentials)) {
                 return response()->json([
                     'status' => false,
                     'message' => 'Credenciales inválidas'
                 ], 401);
             }
- 
+        
             $user = auth('api')->user();
-            
-            // ActiveSesion::updateOrCreate(['user_id'=>$user->id],[
-            //     'roles'=>$user->getRoleNames()->toArray(),
-            //     'permissions' => $user->getAllPermissions()->pluck('name')->toArray(),
-            //     'last_activity' => now()
-            // ]);
-            
-            if (!Hash::check($request->password, $user->password)) {
-                return response()->json([
-                    'error' => ['password' => ['La contraseña es incorrecta.']]
-                ], 401);
+
+            $roles = [];
+            $permissions = [];
+            try {
+                $roles = $user->roles()->pluck('name')->toArray();
+                $permissions = $user->getAllPermissions()->pluck('name')->toArray();
+            } catch (\Throwable $e) {
+                // Si Spatie no está configurado o falla, se envían listas vacías
             }
-            
+
             $usuarios = [
                 'status' => true,
                 'access_token' => $token,
                 'token_type' => 'bearer',
-                'expires_in' => auth('api')->factory()->getTTL() * 60, // TTL en segundos
-                'user' => $user,
-                'roles' => $user->getRoleNames(),
-                'permissions' => $user->getAllPermissions()->pluck('name')
+                'expires_in' => auth('api')->factory()->getTTL() * 60,
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'email' => $user->email,
+                ],
+                'roles' => $roles,
+                'permissions' => $permissions,
             ];
-            
+
             return $this->success('Inicio de sesión exitoso', 200, $usuarios);
     
         } catch (\Throwable $th) {
-            $this->error('Error al iniciar sesión');
-            
+            Log::error('Login error: ' . $th->getMessage(), ['exception' => $th]);
+            return $this->error('Error al iniciar sesión', 500);
         }
 
     }
@@ -111,8 +113,7 @@ class AuthenticationController extends Controller
             ];
             return $this->success('Token refrescado exitosamente', 200, $usuario);
         } catch (\Throwable $th) {
-            $this->error('Error al refrescar el token');
-          
+            return $this->error('Error al refrescar el token', 401);
         }
     }
 
@@ -126,8 +127,7 @@ class AuthenticationController extends Controller
             auth('api')->logout();
             return $this->success('Se cerro sesión coreectamente',200);
         } catch (\Throwable $th) {
-            $this->error('Error al cerrar sesión');
-           
+            return $this->error('Error al cerrar sesión', 500);
         }
     }
 

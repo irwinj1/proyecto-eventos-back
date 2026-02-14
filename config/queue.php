@@ -13,7 +13,9 @@ return [
     |
     */
 
-    'default' => env('QUEUE_CONNECTION', 'database'),
+    'default' => (env('QUEUE_CONNECTION') === 'mongodb' && ! filter_var(env('USE_MONGO', false), FILTER_VALIDATE_BOOLEAN))
+        ? 'sync'
+        : env('QUEUE_CONNECTION', 'database'),
 
     /*
     |--------------------------------------------------------------------------

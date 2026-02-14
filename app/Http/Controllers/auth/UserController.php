@@ -4,7 +4,6 @@ namespace App\Http\Controllers\auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\UsersCreateRequest;
-use App\Models\Logs\Logs;
 use App\Models\User;
 use App\Traits\ApiResponse;
 use Illuminate\Http\Request;
@@ -89,11 +88,13 @@ class UserController extends Controller
                 }
             }
 
-            Logs::create([
-                'action' => 'create_user',
-                'ip' => $request->ip(),
-                'data' => $user->id
-            ]);
+            if (array_key_exists('mongodb', config('database.connections', []))) {
+                \App\Models\Logs\Logs::create([
+                    'action' => 'create_user',
+                    'ip' => $request->ip(),
+                    'data' => $user->id
+                ]);
+            }
             DB::commit();
 
             return $this->success('Usuario creado',200,$user);

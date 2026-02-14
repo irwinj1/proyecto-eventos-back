@@ -61,14 +61,21 @@ class User extends Authenticatable implements JWTSubject
         return $this->getKey();
     }
 
-    public function getJWTCustomClaims() {
-        return [
-            'roles' => $this->getRoleNames()->pluck('name'),
-            'permissions' => $this->getAllPermissions()->pluck('name'),
+    public function getJWTCustomClaims(): array
+    {
+        $claims = [
             'user' => $this->name,
             'email' => $this->email,
             'id' => $this->id,
         ];
+        try {
+            $claims['roles'] = $this->roles()->pluck('name')->toArray();
+            $claims['permissions'] = $this->getAllPermissions()->pluck('name')->toArray();
+        } catch (\Throwable $e) {
+            $claims['roles'] = [];
+            $claims['permissions'] = [];
+        }
+        return $claims;
     }
     public function categoriaActualiza(){
         return $this->hasMany(CtlCategoria::class,'id_usuario_actualiza','id');

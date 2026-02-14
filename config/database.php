@@ -109,17 +109,20 @@ return [
             // 'encrypt' => env('DB_ENCRYPT', 'yes'),
             // 'trust_server_certificate' => env('DB_TRUST_SERVER_CERTIFICATE', 'false'),
         ],
-        'mongodb' => [
-            'driver'   => 'mongodb',
-            'host'     => env('DB_CONNECTION_MONGO', 'mongodb'),
-            'port'     => env('MONGO_PORT', 27017),
-            'database' => env('MONGO_DB', 'test'),
-            'username' => env('MONGO_ROOT_USERNAME', 'root'),
-            'password' => env('MONGO_ROOT_PASSWORD', 'P4ssw0rd'),
-            'options'  => [
-                'authSource' => 'admin',
+
+        ...(filter_var(env('USE_MONGO', false), FILTER_VALIDATE_BOOLEAN) && class_exists(\MongoDB\Laravel\MongoDBServiceProvider::class) ? [
+            'mongodb' => [
+                'driver'   => 'mongodb',
+                'host'     => env('DB_CONNECTION_MONGO', 'mongodb'),
+                'port'     => env('MONGO_PORT', 27017),
+                'database' => env('MONGO_DB', 'test'),
+                'username' => env('MONGO_ROOT_USERNAME', 'root'),
+                'password' => env('MONGO_ROOT_PASSWORD', 'P4ssw0rd'),
+                'options'  => [
+                    'authSource' => 'admin',
+                ],
             ],
-        ],
+        ] : []),
 
     ],
 
