@@ -23,7 +23,7 @@ class UserController extends Controller
     /**
      
      *
-     * @operationId Lista Usuarios
+     * @operationId Lista Usuario
      */
     public function index(Request $request)
     {
