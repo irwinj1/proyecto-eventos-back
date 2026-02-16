@@ -1,4 +1,5 @@
 <?php
+use App\Http\Controllers\Api\catalogos\CategoriasController;
 use App\Http\Controllers\auth\AuthenticationController;
 use App\Http\Controllers\auth\RolPermissionController;
 use App\Http\Controllers\auth\UserController;
@@ -29,4 +30,11 @@ Route::middleware('auth:api')->prefix('rol-permisos')->group(function () {
     Route::post('/create-rol',[RolPermissionController::class,'createRol'])->middleware('rolePermission:Super Admin');
     Route::delete('/eliminar-rol/{id}',[RolPermissionController::class,'eliminarRol'])->middleware('rolePermission:Super Admin');
     Route::delete('/eliminar-permiso',[RolPermissionController::class,'eliminarPermisos'])->middleware('rolePermission:Super Admin');
+});
+
+Route::prefix('catalogos')->group(function(){
+    Route::prefix('categorias')->group(function(){
+        Route::get('/',[CategoriasController::class,'index']);
+        Route::post('/',[CategoriasController::class,'store']);
+    });
 });
