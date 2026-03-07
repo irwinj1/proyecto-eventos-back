@@ -18,16 +18,30 @@ class PersonaController extends Controller
     public function index(Request $request){
         try {
             $persona = MntPersona::with([
-                'genero'=>function($query){
-                    $query->select('id','nombre','estado');
-                },
-                'usuario','direcciones.distrito.municipio.departamentos.pais','contactos'
+                'genero',
+                'usuario',
+                'direcciones.distrito.municipio.departamentos.pais',
+                'contactos'
             ])
-            ->whereHas('genero',function($g){
-                $g->where('estado',true);
-            })
-            ->paginate(10);
-            return $this->success('Lista Usuarion', 200, $persona);
+            ->when($request->has('genero'),function($q) use($request){
+            $q->where('id_genero',$request->get('genero'));
+            });
+            // if($request->has('genero')){
+            //     $persona->where('id_genero',$request->genero);
+            // }
+      
+            $personaPaginate =$persona->paginate(10);
+            $personaMap = $personaPaginate->map(function($p){
+                return [
+                    'id'=>$p->id,
+                    'nombre'=>$p->nombre,
+                    'apellido'=>$p->apellido,
+                    'fecha_nacimiento'=>$p->fecha_nacimiento
+                ];
+            });
+           
+            
+            return $this->success('Lista Usuarios', 200, $personaMap);
         } catch (\Throwable $th) {
             //throw $th;
             return $this->error('Error al obtener la persona');
@@ -37,6 +51,7 @@ class PersonaController extends Controller
         try {
             
             $validated = $request->validated();
+           
             $rol = $request->input('rol') ?? 'User';
             \DB::beginTransaction();
             $userData =[
@@ -56,7 +71,6 @@ class PersonaController extends Controller
                 'id_usuario'=>$user['id'],
               ];
               
-              
               $personaData = MntPersona::create($persona);
              $dataDireccion = [
                 'direccion'=>$validated['direccion'],
@@ -64,6 +78,7 @@ class PersonaController extends Controller
                 'id_tipo_direccion'=>$validated['id_tipo_direccion'],
                     'id_persona'=>$personaData->id,
              ];
+             
               if($dataDireccion){
                
                 MntDireccion::create([
@@ -74,6 +89,7 @@ class PersonaController extends Controller
                 ]);
                 
                 }
+                
                 $contactos = collect($validated['contactos']);
                
                 if($contactos){

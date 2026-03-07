@@ -84,11 +84,11 @@ class UserController extends Controller
                 $user->assignRole($validated['rol']);
             }
             
-            if($request['permisos']){
-                foreach($request['permisos'] as $permiso){
-                    $user->givePermissionTo($permiso);
-                }
-            }
+            // if($request['permisos']){
+            //     foreach($request['permisos'] as $permiso){
+            //         $user->givePermissionTo($permiso);
+            //     }
+            // }
 
             // if (array_key_exists('mongodb', config('database.connections', []))) {
             //     \App\Models\Logs\Logs::create([
