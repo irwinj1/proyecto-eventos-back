@@ -82,7 +82,7 @@ class AuthenticationController extends Controller
     
         } catch (\Throwable $th) {
             Log::error('Login error: ' . $th->getMessage(), ['exception' => $th]);
-            return $this->error('Error al iniciar sesión', 500);
+            return $this->error('Error al iniciar sesión'.$th->getMessage(), 500);
         }
 
     }

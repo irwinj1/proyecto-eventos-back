@@ -15,6 +15,7 @@ use App\Http\Requests\RolesOrPermission\AsignarPermisosUsuarioRequest;
 use App\Http\Requests\RolesOrPermission\AsignarRolUsuarioRequest;
 use App\Http\Requests\RolesOrPermission\RevocarPermisoUsuarioRequest;
 use App\Http\Requests\RolesOrPermission\RevocarRolUsuarioRequest;
+use Pest\Support\Str;
 
 class UserController extends Controller
 {
@@ -68,36 +69,37 @@ class UserController extends Controller
      *
      * @operationId Crear Usuarios
      */
-    public function createUser(UsersCreateRequest $request){
+    public function createUser($request){
         DB::beginTransaction();
         try {
-            $validated = $request->validated();
-
+            $validated = $request;
+           
+            $password = Hash::make(\Str::random(10));
             $user = User::create([
                 'name'=>$validated['name'],
                 'email'=>$validated['email'],
-                'password'=>Hash::make($validated['password'])
+                'password'=>$password
             ]);
-            if($request->has('rol')){
+            if($request['rol']){
                 $user->assignRole($validated['rol']);
             }
             
-            if($request->has('permisos')){
-                foreach($validated['permisos'] as $permiso){
+            if($request['permisos']){
+                foreach($request['permisos'] as $permiso){
                     $user->givePermissionTo($permiso);
                 }
             }
 
-            if (array_key_exists('mongodb', config('database.connections', []))) {
-                \App\Models\Logs\Logs::create([
-                    'action' => 'create_user',
-                    'ip' => $request->ip(),
-                    'data' => $user->id
-                ]);
-            }
+            // if (array_key_exists('mongodb', config('database.connections', []))) {
+            //     \App\Models\Logs\Logs::create([
+            //         'action' => 'create_user',
+            //         'ip' => $request->ip(),
+            //         'data' => $user->id
+            //     ]);
+            // }
             DB::commit();
 
-            return $this->success('Usuario creado',200,$user);
+            return $user;
         } catch (\Exception $e) {
             //throw $th;
            DB::rollBack();

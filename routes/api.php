@@ -1,5 +1,6 @@
 <?php
 use App\Http\Controllers\Api\catalogos\CategoriasController;
+use App\Http\Controllers\Api\Persona\PersonaController;
 use App\Http\Controllers\auth\AuthenticationController;
 use App\Http\Controllers\auth\RolPermissionController;
 use App\Http\Controllers\auth\UserController;
@@ -37,4 +38,9 @@ Route::prefix('catalogos')->group(function(){
         Route::get('/',[CategoriasController::class,'index']);
         Route::post('/',[CategoriasController::class,'store']);
     });
+});
+
+Route::middleware('auth:api')->prefix('persona')->group(function(){
+    Route::get('/',[PersonaController::class,'index'])->middleware('rolePermission:User,Super Admin,Admin');
+    Route::post('/',[PersonaController::class,'crearPersona'])->middleware('rolePermission:Super Admin,Admin');
 });
