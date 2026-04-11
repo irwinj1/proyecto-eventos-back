@@ -30,6 +30,9 @@ class CategoriasController extends Controller
                 return [
                     'id'=>$q->id,
                     'nombre'=>$q->nombre,
+                    'color'=>$q->color,
+                    'icono'=>$q->icono,
+                    'estado'=>$q->estado,
 
                 ];
             });
@@ -79,6 +82,20 @@ class CategoriasController extends Controller
         } catch (\Exception $e) {
             //throw $th;
             $this->error('Error al crear la categoria');
+        }
+    }
+    public function eliminarCategoria($id){
+        try {
+            $categoria = CtlCategoria::find($id);
+            if($categoria){
+               $categoria->estado = !$categoria->estado;
+               $categoria->save();
+                return $this->success('Desactivado con exito', 200);
+            }
+            return $this->error('No se encontro la categoria');
+        } catch (\Throwable $th) {
+            //throw $th;
+            return $this->error('Error al desactivar la categoria');
         }
     }
 }

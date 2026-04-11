@@ -37,6 +37,7 @@ Route::prefix('catalogos')->group(function(){
     Route::prefix('categorias')->group(function(){
         Route::get('/',[CategoriasController::class,'index']);
         Route::post('/',[CategoriasController::class,'store']);
+        Route::delete('/{id}',[CategoriasController::class,'eliminarCategoria']);
     });
 });
 

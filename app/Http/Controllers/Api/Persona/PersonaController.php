@@ -21,7 +21,7 @@ class PersonaController extends Controller
                 'genero',
                 'usuario',
                 'direcciones.distrito.municipio.departamentos.pais',
-                'contactos'
+                'contactos.tipoContacto'
             ])
             ->when($request->has('genero'),function($q) use($request){
             $q->where('id_genero',$request->get('genero'));
@@ -36,12 +36,32 @@ class PersonaController extends Controller
                     'id'=>$p->id,
                     'nombre'=>$p->nombre,
                     'apellido'=>$p->apellido,
-                    'fecha_nacimiento'=>$p->fecha_nacimiento
+                    'fecha_nacimiento'=>$p->fecha_nacimiento,
+                    'direccion'=>[
+                        'id'=>$p->direcciones->first()->id,
+                        'direccion'=>$p->direcciones->first()->direccion,
+                        'distrito'=>$p->direcciones->first()->distrito->nombre,
+                        'municipio'=>$p->direcciones->first()->distrito->municipio->nombre,
+                        'departamento'=>$p->direcciones->first()->distrito->municipio->departamentos->nombre,
+                        'pais'=>$p->direcciones->first()->distrito->municipio->departamentos->pais->nombre,
+                    ],
+                    'contactos'=>$p->contactos->map(function($c){
+                        return [
+                            'id'=>$c->id,
+                            'contacto'=>$c->nombre,
+                            'tipo_contacto'=>$c->tipoContacto->nombre
+                        ];
+                    })
                 ];
             });
-           
+           $pagination = [
+            'lastPage'=>$personaPaginate->lastPage(),
+            'currentPage'=>$personaPaginate->currentPage(),
+            'total'=> $personaPaginate->total(),
+            'perPage'=>$personaPaginate->perPage()
+           ];
             
-            return $this->success('Lista Usuarios', 200, $personaMap);
+            return $this->success('Lista Usuarios', 200, $personaMap, $pagination);
         } catch (\Throwable $th) {
             //throw $th;
             return $this->error('Error al obtener la persona');
