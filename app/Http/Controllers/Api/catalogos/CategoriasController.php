@@ -15,16 +15,17 @@ class CategoriasController extends Controller
     public function index(Request $request){
         try {
 
-            $categoria = CtlCategoria::orderBy('id','desc');
+            $categoria = CtlCategoria::orderBy('estado','desc');
             if($request->has('nombre')){
                 $categoria->where('nombre','ilike',"%$request->nombre%");
             }
 
-            $categoria= $categoria->paginate(10);
+            $categoria= $categoria->paginate(5);
             $paginate=[
                 'perPage'=>$categoria->perPage(),
                 'currentPage'=>$categoria->currentPage(),
-                'lastpage' => $categoria->lastPage()
+                'lastpage' => $categoria->lastPage(),
+                'total'=>$categoria->total(),
             ];
             $categoriaMap = $categoria->map(function($q){
                 return [

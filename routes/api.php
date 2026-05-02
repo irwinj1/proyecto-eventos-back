@@ -1,5 +1,7 @@
 <?php
+use App\Http\Controllers\Api\catalogos\CatalagosController;
 use App\Http\Controllers\Api\catalogos\CategoriasController;
+use App\Http\Controllers\Api\eventos\EventosController;
 use App\Http\Controllers\Api\Persona\PersonaController;
 use App\Http\Controllers\auth\AuthenticationController;
 use App\Http\Controllers\auth\RolPermissionController;
@@ -39,9 +41,18 @@ Route::prefix('catalogos')->group(function(){
         Route::post('/',[CategoriasController::class,'store']);
         Route::delete('/{id}',[CategoriasController::class,'eliminarCategoria']);
     });
+    Route::get('/pais',[CatalagosController::class,'pais']);
+    Route::get('/departamentos',[CatalagosController::class,'departamentos']);
+    Route::get('/municipios',[CatalagosController::class,'municipios']);
+    Route::get('/distritos',[CatalagosController::class,'distritos']);
 });
 
 Route::middleware('auth:api')->prefix('persona')->group(function(){
     Route::get('/',[PersonaController::class,'index'])->middleware('rolePermission:User,Super Admin,Admin');
     Route::post('/',[PersonaController::class,'crearPersona'])->middleware('rolePermission:Super Admin,Admin');
+});
+
+Route::prefix('eventos')->group(function(){
+    Route::get('/', [EventosController::class, 'index']);
+    Route::post('/', [EventosController::class, 'crearEvento']);
 });
