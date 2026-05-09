@@ -45,7 +45,6 @@ class EventosController extends Controller
             $evento->slug = Str::slug($validated['nombre']) . '-' . time();
             $evento->fecha_inicio = $fechaInicio;
             $evento->fecha_fin = $fechaFin;
-            $evento->capacidad = $validated['capacidad'];
             $evento->id_categoria = $validated['id_categoria'];
             $evento->localidad = $validated['localidad'];
             $evento->es_online = $validated['es_online'];
@@ -53,8 +52,8 @@ class EventosController extends Controller
             $evento->meet_url = $validated['meet_url'];
             $evento->es_silla_numerada = $validated['es_silla_numerada'];
             $evento->estado = true;
-            $evento->id_usuario = auth()->id();
-            $evento->id_usuario_creacion = auth()->id();
+            $evento->id_usuario = 1;
+            $evento->id_usuario_creacion = 1;
 
             if ($request->hasFile('imagen')) {
                 $path = $request->file('imagen')->store('eventos', 'public');
@@ -72,7 +71,7 @@ class EventosController extends Controller
                         'nombre' => $file->getClientOriginalName(),
                         'tipo' => $file->getClientOriginalExtension(),
                         'url' => $path,
-                        'id_usuario_creacion' => auth()->id()
+                        'id_usuario_creacion' =>1
                     ]);
                 }
             }
@@ -83,15 +82,15 @@ class EventosController extends Controller
                 $direccion->direccion = $validated['direccion'] ?? null;
                 $direccion->id_evento = $evento->id;
                 $direccion->id_tipo_direccion = 2; // Ejemplo: 2 para eventos
-                $direccion->id_usuario_creacion = auth()->id();
+                $direccion->id_usuario_creacion =1;
                 $direccion->save();
             }
 
             DB::commit();
             return $this->success('Evento creado exitosamente', 201, $evento);
-        } catch (\Throwable $th) {
+        } catch (\Exception $e) {
             DB::rollBack();
-            return $this->error('Error al crear el evento: ' . $th->getMessage(), 500);
+            return $this->error('Error al crear el evento: ' . $e->getMessage(), 500);
         }
     }
 }

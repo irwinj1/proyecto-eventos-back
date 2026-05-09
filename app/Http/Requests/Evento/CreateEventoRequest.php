@@ -28,7 +28,7 @@ class CreateEventoRequest extends FormRequest
             'fecha_fin' => 'required|date',
             'capacidad' => 'nullable|integer',
             'id_categoria' => 'required|integer',
-            'imagen' => 'required|image|max:2048',
+            'imagen' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'localidad' => 'nullable|string|max:255',
             'id_distrito' => 'nullable|integer',
             'es_online' => 'required|boolean',
@@ -53,12 +53,11 @@ class CreateEventoRequest extends FormRequest
             'fecha_inicio.date' => 'La fecha de inicio debe ser una fecha',
             'fecha_fin.required' => 'La fecha de fin es obligatoria',
             'fecha_fin.date' => 'La fecha de fin debe ser una fecha',
-            'capacidad.nullable' => 'La capacidad es opcional',
-            'capacidad.integer' => 'La capacidad debe ser un numero entero',
             'id_categoria.required' => 'La categoria es obligatoria',
             'id_categoria.integer' => 'La categoria debe ser un numero entero',
             'imagen.required' => 'La imagen es obligatoria',
             'imagen.image' => 'La imagen debe ser una imagen',
+            'imagen.mimes' => 'La imagen debe ser jpeg, png o jpg',
             'imagen.max' => 'La imagen no puede exceder los 2MB',
             'localidad.nullable' => 'La localidad es opcional',
             'localidad.string' => 'La localidad debe ser una cadena de texto',
@@ -83,13 +82,6 @@ class CreateEventoRequest extends FormRequest
             'direccion.string' => 'La direccion debe ser una cadena de texto',
             'direccion.max' => 'La direccion no puede exceder los 255 caracteres',
         ];
-    }
-    protected function prepareForValidation()
-    {
-        $this->merge([
-            'es_online' => $this->es_online === 'true' || $this->es_online === true || $this->es_online === 1,
-            'es_silla_numerada' => $this->es_silla_numerada === 'true' || $this->es_silla_numerada === true || $this->es_silla_numerada === 1,
-        ]);
     }
 
 }

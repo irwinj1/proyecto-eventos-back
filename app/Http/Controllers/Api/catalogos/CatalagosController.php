@@ -67,8 +67,8 @@ class CatalagosController extends Controller
             $perPage = $request->per_page ?? 20;
             $municipios = CtlMunicipio::query();
 
-            if ($request->has('idDepartamento')) {
-                $municipios->where('id_departamento', $request->idDepartamento);
+            if ($request->has('id_departamento')) {
+                $municipios->where('id_departamento', $request->id_departamento);
             }
 
             if ($request->has('search')) {
@@ -104,8 +104,8 @@ class CatalagosController extends Controller
             $perPage = $request->per_page ?? 20;
             $distritos = CtlDistrito::query();
 
-            if ($request->has('idMunicipio')) {
-                $distritos->where('id_municipio', $request->idMunicipio);
+            if ($request->has('id_municipio')) {
+                $distritos->where('id_municipio', $request->id_municipio);
             }
 
             if ($request->has('search')) {
